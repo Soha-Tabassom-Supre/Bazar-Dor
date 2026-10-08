@@ -1,22 +1,25 @@
 const API_URL = "https://api.abcz.workers.dev/api/bazardor";
-
 export interface Product {
   id: number;
-  slug: string;
   nameBn: string;
+  slug: string;
   category: string;
-  categoryIcon: string;
-  categoryNameBn: string;
   image: string;
+  unit: string;
   today: number;
   yesterday: number;
   lastWeek: number;
   lastMonth: number;
-  unit: string;
-  change: {
-    dir: "up" | "down" | "same";
+  change?: {
+    dir: string;
     pct: number;
   };
+  markets: {
+    market: string;
+    division: string;
+    min: number;
+    max: number;
+  }[];
 }
 
 export interface Category {
