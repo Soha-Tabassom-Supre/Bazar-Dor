@@ -1,4 +1,6 @@
-const API_URL = "https://api.abcz.workers.dev/api/bazardor";
+
+const API_URL = "https://api.api-store.workers.dev/api/bazardor";
+
 export interface Product {
   id: number;
   nameBn: string;
