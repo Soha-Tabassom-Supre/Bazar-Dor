@@ -1,9 +1,13 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+
 import Navbar from "@/components/Navbar";
 import PriceTicker from "@/components/PriceTicker";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +40,12 @@ export default function RootLayout({
         </Suspense>
 
         <PriceTicker />
-        {children}
+        <Toaster position="top-right" />
+        <main className="flex-1">{children}</main>
+
+        <Footer />
       </body>
     </html>
   );
 }
+
