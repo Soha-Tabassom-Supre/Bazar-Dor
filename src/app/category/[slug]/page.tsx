@@ -1,9 +1,10 @@
-
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategory, getProducts } from "@/lib/api";
 import CategoryProducts from "@/components/CategoryProducts";
+
+export const instant = false;
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
@@ -21,9 +22,7 @@ async function CategoryContent({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const products = allProducts.filter(
-    (product) => product.category === slug,
-  );
+  const products = allProducts.filter((product) => product.category === slug);
 
   return (
     <main className="min-h-screen bg-white px-4 py-8 text-gray-900 sm:px-6">
@@ -64,4 +63,3 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     </Suspense>
   );
 }
-
