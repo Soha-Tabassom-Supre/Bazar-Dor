@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -13,6 +12,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,15 +20,10 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
-      const result = await signIn.email({
-        email,
-        password,
-      });
+      const result = await signIn.email({ email, password });
 
       if (result.error) {
-        setError(
-          result.error.message || "ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।"
-        );
+        setError(result.error.message || "ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।");
         return;
       }
 
@@ -38,6 +33,26 @@ export default function SignInPage() {
       setError("সাইন ইন করা যায়নি। আবার চেষ্টা করুন।");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSocialSignIn(provider: "google" | "github") {
+    setError("");
+    setSocialLoading(provider);
+
+    try {
+      const result = await signIn.social({
+        provider,
+        callbackURL: "/",
+      });
+
+      if (result.error) {
+        setError(result.error.message || "সোশ্যাল সাইন ইন করা যায়নি।");
+        setSocialLoading("");
+      }
+    } catch {
+      setError("সাইন ইন করা যায়নি। আবার চেষ্টা করুন।");
+      setSocialLoading("");
     }
   }
 
@@ -51,9 +66,7 @@ export default function SignInPage() {
           ← বাজার দরে ফিরে যান
         </Link>
 
-        <h1 className="mt-6 text-3xl font-extrabold">
-          সাইন ইন করুন
-        </h1>
+        <h1 className="mt-6 text-3xl font-extrabold">সাইন ইন করুন</h1>
 
         <p className="mt-2 text-sm text-gray-600">
           আপনার BazarDor অ্যাকাউন্টে প্রবেশ করুন।
@@ -61,13 +74,9 @@ export default function SignInPage() {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium"
-            >
+            <label htmlFor="email" className="mb-2 block text-sm font-medium">
               ইমেইল
             </label>
-
             <input
               id="email"
               type="email"
@@ -87,7 +96,6 @@ export default function SignInPage() {
             >
               পাসওয়ার্ড
             </label>
-
             <input
               id="password"
               type="password"
@@ -111,12 +119,42 @@ export default function SignInPage() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-emerald-700 px-4 py-3 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={loading || !!socialLoading}
+            className="w-full rounded-xl bg-emerald-700 px-4 py-3 font-semibold text-white transition hover:bg-emerald-800 disabled:opacity-60"
           >
-            {loading ? "সাইন ইন হচ্ছে..." : "সাইন ইন"}
+            {loading ? "সাইন ইন হচ্ছে..." : "ইমেইল দিয়ে সাইন ইন"}
           </button>
         </form>
+
+        <div className="my-6 flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-sm text-gray-500">অথবা</span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => handleSocialSignIn("google")}
+            disabled={loading || !!socialLoading}
+            className="w-full rounded-xl border border-gray-200 px-4 py-3 font-semibold transition hover:bg-gray-50 disabled:opacity-60"
+          >
+            {socialLoading === "google"
+              ? "Google দিয়ে সাইন ইন হচ্ছে..."
+              : "Google দিয়ে সাইন ইন করুন"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSocialSignIn("github")}
+            disabled={loading || !!socialLoading}
+            className="w-full rounded-xl border border-gray-200 px-4 py-3 font-semibold transition hover:bg-gray-50 disabled:opacity-60"
+          >
+            {socialLoading === "github"
+              ? "GitHub দিয়ে সাইন ইন হচ্ছে..."
+              : "GitHub দিয়ে সাইন ইন করুন"}
+          </button>
+        </div>
 
         <p className="mt-6 text-center text-sm text-gray-600">
           অ্যাকাউন্ট নেই?{" "}
@@ -131,4 +169,3 @@ export default function SignInPage() {
     </main>
   );
 }
-
