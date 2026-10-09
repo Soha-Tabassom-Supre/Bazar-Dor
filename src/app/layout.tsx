@@ -39,7 +39,10 @@ export default function RootLayout({
           <Navbar />
         </Suspense>
 
-        <PriceTicker />
+        <Suspense fallback={<div className="h-12 bg-emerald-50" />}>
+          <PriceTicker />
+        </Suspense>
+        
         <Toaster position="top-right" />
         <main className="flex-1">{children}</main>
 
